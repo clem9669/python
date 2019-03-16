@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import re, os
+
+'''
+    Purpose:
+        increment by 1 into SerialKey, a config photoshop file
+
+    path=/Library/Application Support/Adobe/Adobe Photoshop CC 2018/AMT
+
+    <Data key="TrialSerialNumber">XXXXX</Data>
+'''
+
+#1- read file
+#2- find number < grep.txt
+#3- number < number.txt
+#4- add 1 < new_numero.txt
+#5- replace numer with new_numero
+#6- save
+
+
+#Params:
+file = "/Library/Application Support/Adobe/Adobe Photoshop CC 2018/AMT/application.xml"
+word = "TrialSerialNumber"
+
+#Parse TrialSerialNumber
+os.system("grep 'TrialSerialNumber' '/Library/Application Support/Adobe/Adobe Photoshop CC 2018/AMT/application.xml' > /tmp/grep.txt ")
+os.system("cd /tmp/; cat grep.txt | cut -d '>' -f 2 | cut -d '<' -f 1 > /tmp/number.txt")
+
+#Transform to interger + 1
+chiffre = open("/tmp/number.txt",'r')
+numero = int(chiffre.read())
+new_numero = numero + 1
+
+#Read in the file
+with open(file, 'r') as original:
+    filedata = original.read()
+
+#Replace numero with new_numero in number field
+    final = filedata.replace(str(numero), str(new_numero))
+
+# Write the file out again
+with open(file, 'w') as original:
+  original.write(final)
+
+#Clean up
+os.system("rm -fv /tmp/number.txt /tmp/grep.txt")
